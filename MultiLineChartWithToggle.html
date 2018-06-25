@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style> /* set the CSS */
+
+body { font: 12px Arial;}
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.legend {
+    font-size: 16px;
+    font-weight: bold;
+    text-anchor: middle;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 90px;
+  height: 28px;
+  padding: 4px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+}
+
+</style>
+<body>
+
+<!-- load the d3.js library -->    
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+
+//Load the data via JSON Format
+var data = [
+        {"symbol": "Instagram", "date": "Jan 2000", "count": 39},
+        {"symbol": "Instagram", "date": "Feb 2000", "count": 36},
+        {"symbol": "Instagram", "date": "Mar 2000", "count": 43},
+        {"symbol": "Instagram", "date": "Apr 2000", "count": 28},
+        {"symbol": "Instagram", "date": "May 2000", "count": 25},
+        {"symbol": "Instagram", "date": "Jun 2000", "count": 32},
+        {"symbol": "Instagram", "date": "Jul 2000", "count": 28},
+        {"symbol": "Instagram", "date": "Aug 2000", "count": 28},
+        {"symbol": "Instagram", "date": "Sep 2000", "count": 24},
+        {"symbol": "Instagram", "date": "Oct 2000", "count": 28},
+        {"symbol": "Instagram", "date": "Nov 2000", "count": 23},
+        {"symbol": "Instagram", "date": "Dec 2000", "count": 17},
+        {"symbol": "Instagram", "date": "Jan 2001", "count": 24},
+        {"symbol": "Instagram", "date": "Feb 2001", "count": 24},
+        {"symbol": "Instagram", "date": "Mar 2001", "count": 22},
+        {"symbol": "Instagram", "date": "Apr 2001", "count": 27},
+        {"symbol": "Instagram", "date": "May 2001", "count": 28},
+        {"symbol": "Instagram", "date": "Jun 2001", "count": 29},
+        {"symbol": "Instagram", "date": "Jul 2001", "count": 26},
+        {"symbol": "Instagram", "date": "Aug 2001", "count": 23},
+        {"symbol": "Instagram", "date": "Sep 2001", "count": 20},
+        {"symbol": "Instagram", "date": "Oct 2001", "count": 23},
+        {"symbol": "Instagram", "date": "Nov 2001", "count": 26},
+        {"symbol": "Instagram", "date": "Dec 2001", "count": 26},
+        {"symbol": "Instagram", "date": "Jan 2002", "count": 25},
+        {"symbol": "Instagram", "date": "Feb 2002", "count": 23},
+        {"symbol": "Instagram", "date": "Mar 2002", "count": 24},
+        {"symbol": "Instagram", "date": "Apr 2002", "count": 21},
+        {"symbol": "Instagram", "date": "May 2002", "count": 20},
+        {"symbol": "Instagram", "date": "Jun 2002", "count": 22},
+        {"symbol": "Instagram", "date": "Jul 2002", "count": 19},
+        {"symbol": "Instagram", "date": "Aug 2002", "count": 19},
+        {"symbol": "Instagram", "date": "Sep 2002", "count": 17},
+        {"symbol": "Instagram", "date": "Oct 2002", "count": 21},
+        {"symbol": "Instagram", "date": "Nov 2002", "count": 23},
+        {"symbol": "Instagram", "date": "Dec 2002", "count": 21},
+        {"symbol": "Instagram", "date": "Jan 2003", "count": 19},
+        {"symbol": "Instagram", "date": "Feb 2003", "count": 19},
+        {"symbol": "Instagram", "date": "Mar 2003", "count": 19},
+        {"symbol": "Instagram", "date": "Apr 2003", "count": 20},
+        {"symbol": "Instagram", "date": "May 2003", "count": 20},
+        {"symbol": "Instagram", "date": "Jun 2003", "count": 20},
+        {"symbol": "Instagram", "date": "Jul 2003", "count": 21},
+        {"symbol": "Instagram", "date": "Aug 2003", "count": 21},
+        {"symbol": "Instagram", "date": "Sep 2003", "count": 22},
+        {"symbol": "Instagram", "date": "Oct 2003", "count": 21},
+        {"symbol": "Instagram", "date": "Nov 2003", "count": 21},
+        {"symbol": "Instagram", "date": "Dec 2003", "count": 22},
+        {"symbol": "Instagram", "date": "Jan 2004", "count": 22},
+        {"symbol": "Instagram", "date": "Feb 2004", "count": 21},
+        {"symbol": "Instagram", "date": "Mar 2004", "count": 20},
+        {"symbol": "Instagram", "date": "Apr 2004", "count": 21},
+        {"symbol": "Instagram", "date": "May 2004", "count": 21},
+        {"symbol": "Instagram", "date": "Jun 2004", "count": 23},
+        {"symbol": "Instagram", "date": "Jul 2004", "count": 23},
+        {"symbol": "Instagram", "date": "Aug 2004", "count": 22},
+        {"symbol": "Instagram", "date": "Sep 2004", "count": 22},
+        {"symbol": "Instagram", "date": "Oct 2004", "count": 23},
+        {"symbol": "Instagram", "date": "Nov 2004", "count": 24},
+        {"symbol": "Instagram", "date": "Dec 2004", "count": 24},
+        {"symbol": "Instagram", "date": "Jan 2005", "count": 24},
+        {"symbol": "Instagram", "date": "Feb 2005", "count": 23},
+        {"symbol": "Instagram", "date": "Mar 2005", "count": 22},
+        {"symbol": "Instagram", "date": "Apr 2005", "count": 23},
+        {"symbol": "Instagram", "date": "May 2005", "count": 23},
+        {"symbol": "Instagram", "date": "Jun 2005", "count": 22},
+        {"symbol": "Instagram", "date": "Jul 2005", "count": 23},
+        {"symbol": "Instagram", "date": "Aug 2005", "count": 25},
+        {"symbol": "Instagram", "date": "Sep 2005", "count": 23},
+        {"symbol": "Instagram", "date": "Oct 2005", "count": 23},
+        {"symbol": "Instagram", "date": "Nov 2005", "count": 25},
+        {"symbol": "Instagram", "date": "Dec 2005", "count": 24},
+        {"symbol": "Instagram", "date": "Jan 2006", "count": 26},
+        {"symbol": "Instagram", "date": "Feb 2006", "count": 25},
+        {"symbol": "Instagram", "date": "Mar 2006", "count": 25},
+        {"symbol": "Instagram", "date": "Apr 2006", "count": 22},
+        {"symbol": "Instagram", "date": "May 2006", "count": 21},
+        {"symbol": "Instagram", "date": "Jun 2006", "count": 21},
+        {"symbol": "Instagram", "date": "Jul 2006", "count": 22},
+        {"symbol": "Instagram", "date": "Aug 2006", "count": 24},
+        {"symbol": "Instagram", "date": "Sep 2006", "count": 25},
+        {"symbol": "Instagram", "date": "Oct 2006", "count": 26},
+        {"symbol": "Instagram", "date": "Nov 2006", "count": 27},
+        {"symbol": "Instagram", "date": "Dec 2006", "count": 28},
+        {"symbol": "Instagram", "date": "Jan 2007", "count": 29},
+        {"symbol": "Instagram", "date": "Feb 2007", "count": 26},
+        {"symbol": "Instagram", "date": "Mar 2007", "count": 26},
+        {"symbol": "Instagram", "date": "Apr 2007", "count": 28},
+        {"symbol": "Instagram", "date": "May 2007", "count": 29},
+        {"symbol": "Instagram", "date": "Jun 2007", "count": 27},
+        {"symbol": "Instagram", "date": "Jul 2007", "count": 27},
+        {"symbol": "Instagram", "date": "Aug 2007", "count": 27},
+        {"symbol": "Instagram", "date": "Sep 2007", "count": 28},
+        {"symbol": "Instagram", "date": "Oct 2007", "count": 35},
+        {"symbol": "Instagram", "date": "Nov 2007", "count": 32},
+        {"symbol": "Instagram", "date": "Dec 2007", "count": 34},
+        {"symbol": "Instagram", "date": "Jan 2008", "count": 31},
+        {"symbol": "Instagram", "date": "Feb 2008", "count": 26},
+        {"symbol": "Instagram", "date": "Mar 2008", "count": 27},
+        {"symbol": "Instagram", "date": "Apr 2008", "count": 27},
+        {"symbol": "Instagram", "date": "May 2008", "count": 27},
+        {"symbol": "Instagram", "date": "Jun 2008", "count": 26},
+        {"symbol": "Instagram", "date": "Jul 2008", "count": 24},
+        {"symbol": "Instagram", "date": "Aug 2008", "count": 26},
+        {"symbol": "Instagram", "date": "Sep 2008", "count": 25},
+        {"symbol": "Instagram", "date": "Oct 2008", "count": 21},
+        {"symbol": "Instagram", "date": "Nov 2008", "count": 19},
+        {"symbol": "Instagram", "date": "Dec 2008", "count": 18},
+        {"symbol": "Instagram", "date": "Jan 2009", "count": 16},
+        {"symbol": "Instagram", "date": "Feb 2009", "count": 15},
+        {"symbol": "Instagram", "date": "Mar 2009", "count": 17},
+        {"symbol": "Instagram", "date": "Apr 2009", "count": 19},
+        {"symbol": "Instagram", "date": "May 2009", "count": 20},
+        {"symbol": "Instagram", "date": "Jun 2009", "count": 23},
+        {"symbol": "Instagram", "date": "Jul 2009", "count": 23},
+        {"symbol": "Instagram", "date": "Aug 2009", "count": 24},
+        {"symbol": "Instagram", "date": "Sep 2009", "count": 25},
+        {"symbol": "Instagram", "date": "Oct 2009", "count": 27},
+        {"symbol": "Instagram", "date": "Nov 2009", "count": 29},
+        {"symbol": "Instagram", "date": "Dec 2009", "count": 30},
+        {"symbol": "Instagram", "date": "Jan 2010", "count": 28},
+        {"symbol": "Instagram", "date": "Feb 2010", "count": 28},
+        {"symbol": "Instagram", "date": "Mar 2010", "count": 28},
+        {"symbol": "Facebook", "date": "Jan 2000", "count": 64},
+        {"symbol": "Facebook", "date": "Feb 2000", "count": 68},
+        {"symbol": "Facebook", "date": "Mar 2000", "count": 67},
+        {"symbol": "Facebook", "date": "Apr 2000", "count": 55},
+        {"symbol": "Facebook", "date": "May 2000", "count": 48},
+        {"symbol": "Facebook", "date": "Jun 2000", "count": 36},
+        {"symbol": "Facebook", "date": "Jul 2000", "count": 30},
+        {"symbol": "Facebook", "date": "Aug 2000", "count": 41},
+        {"symbol": "Facebook", "date": "Sep 2000", "count": 38},
+        {"symbol": "Facebook", "date": "Oct 2000", "count": 36},
+        {"symbol": "Facebook", "date": "Nov 2000", "count": 24},
+        {"symbol": "Facebook", "date": "Dec 2000", "count": 15},
+        {"symbol": "Facebook", "date": "Jan 2001", "count": 17},
+        {"symbol": "Facebook", "date": "Feb 2001", "count": 10},
+        {"symbol": "Facebook", "date": "Mar 2001", "count": 10},
+        {"symbol": "Facebook", "date": "Apr 2001", "count": 15},
+        {"symbol": "Facebook", "date": "May 2001", "count": 16},
+        {"symbol": "Facebook", "date": "Jun 2001", "count": 14},
+        {"symbol": "Facebook", "date": "Jul 2001", "count": 12},
+        {"symbol": "Facebook", "date": "Aug 2001", "count": 8},
+        {"symbol": "Facebook", "date": "Sep 2001", "count": 5},
+        {"symbol": "Facebook", "date": "Oct 2001", "count": 6},
+        {"symbol": "Facebook", "date": "Nov 2001", "count": 11},
+        {"symbol": "Facebook", "date": "Dec 2001", "count": 10},
+        {"symbol": "Facebook", "date": "Jan 2002", "count": 14},
+        {"symbol": "Facebook", "date": "Feb 2002", "count": 14},
+        {"symbol": "Facebook", "date": "Mar 2002", "count": 14},
+        {"symbol": "Facebook", "date": "Apr 2002", "count": 16},
+        {"symbol": "Facebook", "date": "May 2002", "count": 18},
+        {"symbol": "Facebook", "date": "Jun 2002", "count": 16},
+        {"symbol": "Facebook", "date": "Jul 2002", "count": 14},
+        {"symbol": "Facebook", "date": "Aug 2002", "count": 14},
+        {"symbol": "Facebook", "date": "Sep 2002", "count": 15},
+        {"symbol": "Facebook", "date": "Oct 2002", "count": 19},
+        {"symbol": "Facebook", "date": "Nov 2002", "count": 23},
+        {"symbol": "Facebook", "date": "Dec 2002", "count": 18},
+        {"symbol": "Facebook", "date": "Jan 2003", "count": 21},
+        {"symbol": "Facebook", "date": "Feb 2003", "count": 22},
+        {"symbol": "Facebook", "date": "Mar 2003", "count": 26},
+        {"symbol": "Facebook", "date": "Apr 2003", "count": 28},
+        {"symbol": "Facebook", "date": "May 2003", "count": 35},
+        {"symbol": "Facebook", "date": "Jun 2003", "count": 36},
+        {"symbol": "Facebook", "date": "Jul 2003", "count": 41},
+        {"symbol": "Facebook", "date": "Aug 2003", "count": 46},
+        {"symbol": "Facebook", "date": "Sep 2003", "count": 48},
+        {"symbol": "Facebook", "date": "Oct 2003", "count": 54},
+        {"symbol": "Facebook", "date": "Nov 2003", "count": 53},
+        {"symbol": "Facebook", "date": "Dec 2003", "count": 52},
+        {"symbol": "Facebook", "date": "Jan 2004", "count": 50},
+        {"symbol": "Facebook", "date": "Feb 2004", "count": 43},
+        {"symbol": "Facebook", "date": "Mar 2004", "count": 43},
+        {"symbol": "Facebook", "date": "Apr 2004", "count": 43},
+        {"symbol": "Facebook", "date": "May 2004", "count": 48},
+        {"symbol": "Facebook", "date": "Jun 2004", "count": 54},
+        {"symbol": "Facebook", "date": "Jul 2004", "count": 38},
+        {"symbol": "Facebook", "date": "Aug 2004", "count": 38},
+        {"symbol": "Facebook", "date": "Sep 2004", "count": 40},
+        {"symbol": "Facebook", "date": "Oct 2004", "count": 34},
+        {"symbol": "Facebook", "date": "Nov 2004", "count": 39},
+        {"symbol": "Facebook", "date": "Dec 2004", "count": 44},
+        {"symbol": "Facebook", "date": "Jan 2005", "count": 43},
+        {"symbol": "Facebook", "date": "Feb 2005", "count": 35},
+        {"symbol": "Facebook", "date": "Mar 2005", "count": 34},
+        {"symbol": "Facebook", "date": "Apr 2005", "count": 32},
+        {"symbol": "Facebook", "date": "May 2005", "count": 35},
+        {"symbol": "Facebook", "date": "Jun 2005", "count": 33},
+        {"symbol": "Facebook", "date": "Jul 2005", "count": 45},
+        {"symbol": "Facebook", "date": "Aug 2005", "count": 42},
+        {"symbol": "Facebook", "date": "Sep 2005", "count": 45},
+        {"symbol": "Facebook", "date": "Oct 2005", "count": 39},
+        {"symbol": "Facebook", "date": "Nov 2005", "count": 48},
+        {"symbol": "Facebook", "date": "Dec 2005", "count": 47},
+        {"symbol": "Facebook", "date": "Jan 2006", "count": 44},
+        {"symbol": "Facebook", "date": "Feb 2006", "count": 37},
+        {"symbol": "Facebook", "date": "Mar 2006", "count": 36},
+        {"symbol": "Facebook", "date": "Apr 2006", "count": 35},
+        {"symbol": "Facebook", "date": "May 2006", "count": 34},
+        {"symbol": "Facebook", "date": "Jun 2006", "count": 38},
+        {"symbol": "Facebook", "date": "Jul 2006", "count": 26},
+        {"symbol": "Facebook", "date": "Aug 2006", "count": 30},
+        {"symbol": "Facebook", "date": "Sep 2006", "count": 32},
+        {"symbol": "Facebook", "date": "Oct 2006", "count": 38},
+        {"symbol": "Facebook", "date": "Nov 2006", "count": 40},
+        {"symbol": "Facebook", "date": "Dec 2006", "count": 39},
+        {"symbol": "Facebook", "date": "Jan 2007", "count": 37},
+        {"symbol": "Facebook", "date": "Feb 2007", "count": 39},
+        {"symbol": "Facebook", "date": "Mar 2007", "count": 39},
+        {"symbol": "Facebook", "date": "Apr 2007", "count": 61},
+        {"symbol": "Facebook", "date": "May 2007", "count": 69},
+        {"symbol": "Facebook", "date": "Jun 2007", "count": 68},
+        {"symbol": "Facebook", "date": "Jul 2007", "count": 78},
+        {"symbol": "Facebook", "date": "Aug 2007", "count": 79},
+        {"symbol": "Facebook", "date": "Sep 2007", "count": 93},
+        {"symbol": "Facebook", "date": "Oct 2007", "count": 89},
+        {"symbol": "Facebook", "date": "Nov 2007", "count": 90},
+        {"symbol": "Facebook", "date": "Dec 2007", "count": 92},
+        {"symbol": "Facebook", "date": "Jan 2008", "count": 77},
+        {"symbol": "Facebook", "date": "Feb 2008", "count": 64},
+        {"symbol": "Facebook", "date": "Mar 2008", "count": 71},
+        {"symbol": "Facebook", "date": "Apr 2008", "count": 78},
+        {"symbol": "Facebook", "date": "May 2008", "count": 81},
+        {"symbol": "Facebook", "date": "Jun 2008", "count": 73},
+        {"symbol": "Facebook", "date": "Jul 2008", "count": 76},
+        {"symbol": "Facebook", "date": "Aug 2008", "count": 80},
+        {"symbol": "Facebook", "date": "Sep 2008", "count": 72},
+        {"symbol": "Facebook", "date": "Oct 2008", "count": 57},
+        {"symbol": "Facebook", "date": "Nov 2008", "count": 42},
+        {"symbol": "Facebook", "date": "Dec 2008", "count": 51},
+        {"symbol": "Facebook", "date": "Jan 2009", "count": 58},
+        {"symbol": "Facebook", "date": "Feb 2009", "count": 64},
+        {"symbol": "Facebook", "date": "Mar 2009", "count": 73},
+        {"symbol": "Facebook", "date": "Apr 2009", "count": 80},
+        {"symbol": "Facebook", "date": "May 2009", "count": 77},
+        {"symbol": "Facebook", "date": "Jun 2009", "count": 83},
+        {"symbol": "Facebook", "date": "Jul 2009", "count": 85},
+        {"symbol": "Facebook", "date": "Aug 2009", "count": 81},
+        {"symbol": "Facebook", "date": "Sep 2009", "count": 93},
+        {"symbol": "Facebook", "date": "Oct 2009", "count": 118},
+        {"symbol": "Facebook", "date": "Nov 2009", "count": 135},
+        {"symbol": "Facebook", "date": "Dec 2009", "count": 134},
+        {"symbol": "Facebook", "date": "Jan 2010", "count": 125},
+        {"symbol": "Facebook", "date": "Feb 2010", "count": 118},
+        {"symbol": "Facebook", "date": "Mar 2010", "count": 128},
+        {"symbol": "Slack", "date": "Jan 2000", "count": 100},
+        {"symbol": "Slack", "date": "Feb 2000", "count": 92},
+        {"symbol": "Slack", "date": "Mar 2000", "count": 106},
+        {"symbol": "Slack", "date": "Apr 2000", "count": 99},
+        {"symbol": "Slack", "date": "May 2000", "count": 96},
+        {"symbol": "Slack", "date": "Jun 2000", "count": 98},
+        {"symbol": "Slack", "date": "Jul 2000", "count": 100},
+        {"symbol": "Slack", "date": "Aug 2000", "count": 118},
+        {"symbol": "Slack", "date": "Sep 2000", "count": 101},
+        {"symbol": "Slack", "date": "Oct 2000", "count": 88},
+        {"symbol": "Slack", "date": "Nov 2000", "count": 84},
+        {"symbol": "Slack", "date": "Dec 2000", "count": 76},
+        {"symbol": "Slack", "date": "Jan 2001", "count": 100},
+        {"symbol": "Slack", "date": "Feb 2001", "count": 89},
+        {"symbol": "Slack", "date": "Mar 2001", "count": 86},
+        {"symbol": "Slack", "date": "Apr 2001", "count": 103},
+        {"symbol": "Slack", "date": "May 2001", "count": 100},
+        {"symbol": "Slack", "date": "Jun 2001", "count": 102},
+        {"symbol": "Slack", "date": "Jul 2001", "count": 94},
+        {"symbol": "Slack", "date": "Aug 2001", "count": 90},
+        {"symbol": "Slack", "date": "Sep 2001", "count": 82},
+        {"symbol": "Slack", "date": "Oct 2001", "count": 97},
+        {"symbol": "Slack", "date": "Nov 2001", "count": 104},
+        {"symbol": "Slack", "date": "Dec 2001", "count": 109},
+        {"symbol": "Slack", "date": "Jan 2002", "count": 97},
+        {"symbol": "Slack", "date": "Feb 2002", "count": 88},
+        {"symbol": "Slack", "date": "Mar 2002", "count": 94},
+        {"symbol": "Slack", "date": "Apr 2002", "count": 75},
+        {"symbol": "Slack", "date": "May 2002", "count": 72},
+        {"symbol": "Slack", "date": "Jun 2002", "count": 65},
+        {"symbol": "Slack", "date": "Jul 2002", "count": 63},
+        {"symbol": "Slack", "date": "Aug 2002", "count": 68},
+        {"symbol": "Slack", "date": "Sep 2002", "count": 53},
+        {"symbol": "Slack", "date": "Oct 2002", "count": 71},
+        {"symbol": "Slack", "date": "Nov 2002", "count": 79},
+        {"symbol": "Slack", "date": "Dec 2002", "count": 70},
+        {"symbol": "Slack", "date": "Jan 2003", "count": 71},
+        {"symbol": "Slack", "date": "Feb 2003", "count": 71},
+        {"symbol": "Slack", "date": "Mar 2003", "count": 71},
+        {"symbol": "Slack", "date": "Apr 2003", "count": 77},
+        {"symbol": "Slack", "date": "May 2003", "count": 80},
+        {"symbol": "Slack", "date": "Jun 2003", "count": 75},
+        {"symbol": "Slack", "date": "Jul 2003", "count": 74},
+        {"symbol": "Slack", "date": "Aug 2003", "count": 75},
+        {"symbol": "Slack", "date": "Sep 2003", "count": 80},
+        {"symbol": "Slack", "date": "Oct 2003", "count": 81},
+        {"symbol": "Slack", "date": "Nov 2003", "count": 83},
+        {"symbol": "Slack", "date": "Dec 2003", "count": 85},
+        {"symbol": "Slack", "date": "Jan 2004", "count": 91},
+        {"symbol": "Slack", "date": "Feb 2004", "count": 88},
+        {"symbol": "Slack", "date": "Mar 2004", "count": 84},
+        {"symbol": "Slack", "date": "Apr 2004", "count": 81},
+        {"symbol": "Slack", "date": "May 2004", "count": 81},
+        {"symbol": "Slack", "date": "Jun 2004", "count": 81},
+        {"symbol": "Slack", "date": "Jul 2004", "count": 80},
+        {"symbol": "Slack", "date": "Aug 2004", "count": 78},
+        {"symbol": "Slack", "date": "Sep 2004", "count": 79},
+        {"symbol": "Slack", "date": "Oct 2004", "count": 82},
+        {"symbol": "Slack", "date": "Nov 2004", "count": 87},
+        {"symbol": "Slack", "date": "Dec 2004", "count": 91},
+        {"symbol": "Slack", "date": "Jan 2005", "count": 86},
+        {"symbol": "Slack", "date": "Feb 2005", "count": 85},
+        {"symbol": "Slack", "date": "Mar 2005", "count": 84},
+        {"symbol": "Slack", "date": "Apr 2005", "count": 70},
+        {"symbol": "Slack", "date": "May 2005", "count": 70},
+        {"symbol": "Slack", "date": "Jun 2005", "count": 68},
+        {"symbol": "Slack", "date": "Jul 2005", "count": 77},
+        {"symbol": "Slack", "date": "Aug 2005", "count": 75},
+        {"symbol": "Slack", "date": "Sep 2005", "count": 74},
+        {"symbol": "Slack", "date": "Oct 2005", "count": 76},
+        {"symbol": "Slack", "date": "Nov 2005", "count": 82},
+        {"symbol": "Slack", "date": "Dec 2005", "count": 76},
+        {"symbol": "Slack", "date": "Jan 2006", "count": 75},
+        {"symbol": "Slack", "date": "Feb 2006", "count": 75},
+        {"symbol": "Slack", "date": "Mar 2006", "count": 77},
+        {"symbol": "Slack", "date": "Apr 2006", "count": 77},
+        {"symbol": "Slack", "date": "May 2006", "count": 75},
+        {"symbol": "Slack", "date": "Jun 2006", "count": 72},
+        {"symbol": "Slack", "date": "Jul 2006", "count": 72},
+        {"symbol": "Slack", "date": "Aug 2006", "count": 76},
+        {"symbol": "Slack", "date": "Sep 2006", "count": 77},
+        {"symbol": "Slack", "date": "Oct 2006", "count": 87},
+        {"symbol": "Slack", "date": "Nov 2006", "count": 86},
+        {"symbol": "Slack", "date": "Dec 2006", "count": 91},
+        {"symbol": "Slack", "date": "Jan 2007", "count": 93},
+        {"symbol": "Slack", "date": "Feb 2007", "count": 88},
+        {"symbol": "Slack", "date": "Mar 2007", "count": 89},
+        {"symbol": "Slack", "date": "Apr 2007", "count": 96},
+        {"symbol": "Slack", "date": "May 2007", "count": 101},
+        {"symbol": "Slack", "date": "Jun 2007", "count": 100},
+        {"symbol": "Slack", "date": "Jul 2007", "count": 105},
+        {"symbol": "Slack", "date": "Aug 2007", "count": 111},
+        {"symbol": "Slack", "date": "Sep 2007", "count": 112},
+        {"symbol": "Slack", "date": "Oct 2007", "count": 111},
+        {"symbol": "Slack", "date": "Nov 2007", "count": 100},
+        {"symbol": "Slack", "date": "Dec 2007", "count": 103},
+        {"symbol": "Slack", "date": "Jan 2008", "count": 102},
+        {"symbol": "Slack", "date": "Feb 2008", "count": 109},
+        {"symbol": "Slack", "date": "Mar 2008", "count": 110},
+        {"symbol": "Slack", "date": "Apr 2008", "count": 116},
+        {"symbol": "Slack", "date": "May 2008", "count": 125},
+        {"symbol": "Slack", "date": "Jun 2008", "count": 114},
+        {"symbol": "Slack", "date": "Jul 2008", "count": 123},
+        {"symbol": "Slack", "date": "Aug 2008", "count": 118},
+        {"symbol": "Slack", "date": "Sep 2008", "count": 113},
+        {"symbol": "Slack", "date": "Oct 2008", "count": 90},
+        {"symbol": "Slack", "date": "Nov 2008", "count": 79},
+        {"symbol": "Slack", "date": "Dec 2008", "count": 82},
+        {"symbol": "Slack", "date": "Jan 2009", "count": 89},
+        {"symbol": "Slack", "date": "Feb 2009", "count": 90},
+        {"symbol": "Slack", "date": "Mar 2009", "count": 95},
+        {"symbol": "Slack", "date": "Apr 2009", "count": 101},
+        {"symbol": "Slack", "date": "May 2009", "count": 104},
+        {"symbol": "Slack", "date": "Jun 2009", "count": 103},
+        {"symbol": "Slack", "date": "Jul 2009", "count": 116},
+        {"symbol": "Slack", "date": "Aug 2009", "count": 117},
+        {"symbol": "Slack", "date": "Sep 2009", "count": 118},
+        {"symbol": "Slack", "date": "Oct 2009", "count": 119},
+        {"symbol": "Slack", "date": "Nov 2009", "count": 125},
+        {"symbol": "Slack", "date": "Dec 2009", "count": 130},
+        {"symbol": "Slack", "date": "Jan 2010", "count": 121},
+        {"symbol": "Slack", "date": "Feb 2010", "count": 127},
+        {"symbol": "Slack", "date": "Mar 2010", "count": 125},
+        {"symbol": "Twitter", "date": "Jan 2000", "count": 25},
+        {"symbol": "Twitter", "date": "Feb 2000", "count": 28},
+        {"symbol": "Twitter", "date": "Mar 2000", "count": 33},
+        {"symbol": "Twitter", "date": "Apr 2000", "count": 31},
+        {"symbol": "Twitter", "date": "May 2000", "count": 21},
+        {"symbol": "Twitter", "date": "Jun 2000", "count": 26},
+        {"symbol": "Twitter", "date": "Jul 2000", "count": 25},
+        {"symbol": "Twitter", "date": "Aug 2000", "count": 30},
+        {"symbol": "Twitter", "date": "Sep 2000", "count": 12},
+        {"symbol": "Twitter", "date": "Oct 2000", "count": 9},
+        {"symbol": "Twitter", "date": "Nov 2000", "count": 8},
+        {"symbol": "Twitter", "date": "Dec 2000", "count": 7},
+        {"symbol": "Twitter", "date": "Jan 2001", "count": 10},
+        {"symbol": "Twitter", "date": "Feb 2001", "count": 9},
+        {"symbol": "Twitter", "date": "Mar 2001", "count": 11},
+        {"symbol": "Twitter", "date": "Apr 2001", "count": 12},
+        {"symbol": "Twitter", "date": "May 2001", "count": 9},
+        {"symbol": "Twitter", "date": "Jun 2001", "count": 11},
+        {"symbol": "Twitter", "date": "Jul 2001", "count": 9},
+        {"symbol": "Twitter", "date": "Aug 2001", "count": 9},
+        {"symbol": "Twitter", "date": "Sep 2001", "count": 7},
+        {"symbol": "Twitter", "date": "Oct 2001", "count": 8},
+        {"symbol": "Twitter", "date": "Nov 2001", "count": 10},
+        {"symbol": "Twitter", "date": "Dec 2001", "count": 10},
+        {"symbol": "Twitter", "date": "Jan 2002", "count": 12},
+        {"symbol": "Twitter", "date": "Feb 2002", "count": 10},
+        {"symbol": "Twitter", "date": "Mar 2002", "count": 11},
+        {"symbol": "Twitter", "date": "Apr 2002", "count": 12},
+        {"symbol": "Twitter", "date": "May 2002", "count": 11},
+        {"symbol": "Twitter", "date": "Jun 2002", "count": 8},
+        {"symbol": "Twitter", "date": "Jul 2002", "count": 7},
+        {"symbol": "Twitter", "date": "Aug 2002", "count": 7},
+        {"symbol": "Twitter", "date": "Sep 2002", "count": 7},
+        {"symbol": "Twitter", "date": "Oct 2002", "count": 8},
+        {"symbol": "Twitter", "date": "Nov 2002", "count": 7},
+        {"symbol": "Twitter", "date": "Dec 2002", "count": 7},
+        {"symbol": "Twitter", "date": "Jan 2003", "count": 7},
+        {"symbol": "Twitter", "date": "Feb 2003", "count": 7},
+        {"symbol": "Twitter", "date": "Mar 2003", "count": 7},
+        {"symbol": "Twitter", "date": "Apr 2003", "count": 7},
+        {"symbol": "Twitter", "date": "May 2003", "count": 8},
+        {"symbol": "Twitter", "date": "Jun 2003", "count": 9},
+        {"symbol": "Twitter", "date": "Jul 2003", "count": 10},
+        {"symbol": "Twitter", "date": "Aug 2003", "count": 11},
+        {"symbol": "Twitter", "date": "Sep 2003", "count": 10},
+        {"symbol": "Twitter", "date": "Oct 2003", "count": 11},
+        {"symbol": "Twitter", "date": "Nov 2003", "count": 10},
+        {"symbol": "Twitter", "date": "Dec 2003", "count": 10},
+        {"symbol": "Twitter", "date": "Jan 2004", "count": 11},
+        {"symbol": "Twitter", "date": "Feb 2004", "count": 11},
+        {"symbol": "Twitter", "date": "Mar 2004", "count": 13},
+        {"symbol": "Twitter", "date": "Apr 2004", "count": 12},
+        {"symbol": "Twitter", "date": "May 2004", "count": 14},
+        {"symbol": "Twitter", "date": "Jun 2004", "count": 16},
+        {"symbol": "Twitter", "date": "Jul 2004", "count": 16},
+        {"symbol": "Twitter", "date": "Aug 2004", "count": 17},
+        {"symbol": "Twitter", "date": "Sep 2004", "count": 19},
+        {"symbol": "Twitter", "date": "Oct 2004", "count": 26},
+        {"symbol": "Twitter", "date": "Nov 2004", "count": 33},
+        {"symbol": "Twitter", "date": "Dec 2004", "count": 32},
+        {"symbol": "Twitter", "date": "Jan 2005", "count": 38},
+        {"symbol": "Twitter", "date": "Feb 2005", "count": 44},
+        {"symbol": "Twitter", "date": "Mar 2005", "count": 41},
+        {"symbol": "Twitter", "date": "Apr 2005", "count": 36},
+        {"symbol": "Twitter", "date": "May 2005", "count": 39},
+        {"symbol": "Twitter", "date": "Jun 2005", "count": 36},
+        {"symbol": "Twitter", "date": "Jul 2005", "count": 42},
+        {"symbol": "Twitter", "date": "Aug 2005", "count": 46},
+        {"symbol": "Twitter", "date": "Sep 2005", "count": 53},
+        {"symbol": "Twitter", "date": "Oct 2005", "count": 57},
+        {"symbol": "Twitter", "date": "Nov 2005", "count": 67},
+        {"symbol": "Twitter", "date": "Dec 2005", "count": 71},
+        {"symbol": "Twitter", "date": "Jan 2006", "count": 75},
+        {"symbol": "Twitter", "date": "Feb 2006", "count": 68},
+        {"symbol": "Twitter", "date": "Mar 2006", "count": 62},
+        {"symbol": "Twitter", "date": "Apr 2006", "count": 70},
+        {"symbol": "Twitter", "date": "May 2006", "count": 59},
+        {"symbol": "Twitter", "date": "Jun 2006", "count": 57},
+        {"symbol": "Twitter", "date": "Jul 2006", "count": 67},
+        {"symbol": "Twitter", "date": "Aug 2006", "count": 67},
+        {"symbol": "Twitter", "date": "Sep 2006", "count": 76},
+        {"symbol": "Twitter", "date": "Oct 2006", "count": 81},
+        {"symbol": "Twitter", "date": "Nov 2006", "count": 91},
+        {"symbol": "Twitter", "date": "Dec 2006", "count": 84},
+        {"symbol": "Twitter", "date": "Jan 2007", "count": 85},
+        {"symbol": "Twitter", "date": "Feb 2007", "count": 84},
+        {"symbol": "Twitter", "date": "Mar 2007", "count": 92},
+        {"symbol": "Twitter", "date": "Apr 2007", "count": 99},
+        {"symbol": "Twitter", "date": "May 2007", "count": 121},
+        {"symbol": "Twitter", "date": "Jun 2007", "count": 122},
+        {"symbol": "Twitter", "date": "Jul 2007", "count": 131},
+        {"symbol": "Twitter", "date": "Aug 2007", "count": 138},
+        {"symbol": "Twitter", "date": "Sep 2007", "count": 153},
+        {"symbol": "Twitter", "date": "Oct 2007", "count": 189},
+        {"symbol": "Twitter", "date": "Nov 2007", "count": 182},
+        {"symbol": "Twitter", "date": "Dec 2007", "count": 198},
+        {"symbol": "Twitter", "date": "Jan 2008", "count": 135},
+        {"symbol": "Twitter", "date": "Feb 2008", "count": 125},
+        {"symbol": "Twitter", "date": "Mar 2008", "count": 143},
+        {"symbol": "Twitter", "date": "Apr 2008", "count": 173},
+        {"symbol": "Twitter", "date": "May 2008", "count": 188},
+        {"symbol": "Twitter", "date": "Jun 2008", "count": 167},
+        {"symbol": "Twitter", "date": "Jul 2008", "count": 158},
+        {"symbol": "Twitter", "date": "Aug 2008", "count": 169},
+        {"symbol": "Twitter", "date": "Sep 2008", "count": 113},
+        {"symbol": "Twitter", "date": "Oct 2008", "count": 107},
+        {"symbol": "Twitter", "date": "Nov 2008", "count": 92},
+        {"symbol": "Twitter", "date": "Dec 2008", "count": 85},
+        {"symbol": "Twitter", "date": "Jan 2009", "count": 90},
+        {"symbol": "Twitter", "date": "Feb 2009", "count": 89},
+        {"symbol": "Twitter", "date": "Mar 2009", "count": 105},
+        {"symbol": "Twitter", "date": "Apr 2009", "count": 125},
+        {"symbol": "Twitter", "date": "May 2009", "count": 135},
+        {"symbol": "Twitter", "date": "Jun 2009", "count": 142},
+        {"symbol": "Twitter", "date": "Jul 2009", "count": 163},
+        {"symbol": "Twitter", "date": "Aug 2009", "count": 168},
+        {"symbol": "Twitter", "date": "Sep 2009", "count": 185},
+        {"symbol": "Twitter", "date": "Oct 2009", "count": 188},
+        {"symbol": "Twitter", "date": "Nov 2009", "count": 199},
+        {"symbol": "Twitter", "date": "Dec 2009", "count": 210},
+        {"symbol": "Twitter", "date": "Jan 2010", "count": 192},
+        {"symbol": "Twitter", "date": "Feb 2010", "count": 204},
+        {"symbol": "Twitter", "date": "Mar 2010", "count": 223}
+    ]
+
+// Set the dimensions of the canvas / graph
+var margin = {top: 30, right: 20, bottom: 70, left: 50},
+    width = 1000 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// Parse the date / time
+var parseDate = d3.timeParse("%b %Y");
+var formatTime = d3.timeFormat("%e %B %y");
+
+// Set the ranges
+var x = d3.scaleTime().range([0, width]);  
+var y = d3.scaleLinear().range([height, 0]);
+
+// Define the line
+var countline = d3.line()	
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.count); });
+
+//Define the tooltip object
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+    
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", 
+              "translate(" + margin.left + "," + margin.top + ")");
+
+// Get the data
+data.forEach(function(d) {
+		d.date = parseDate(d.date);
+		d.count = +d.count;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+    // Nest the entries by symbol
+    var dataNest = d3.nest()
+        .key(function(d) {return d.symbol;})
+        .entries(data);
+
+    // set the colour scale
+    var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    legendSpace = width/dataNest.length; // spacing for the legend
+
+    // Loop through each symbol / key
+    dataNest.forEach(function(d,i) { 
+
+        svg.append("path")
+            .attr("class", "line")
+            .style("stroke", function() { // Add the colours dynamically
+                return d.color = color(d.key); })
+            .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign an ID
+            .attr("d", countline(d.values));
+
+
+
+        // Add the dots
+        svg.selectAll("dot")
+           .data(data)
+        .enter().append("circle")
+            .attr("r", 1.5)
+            .attr("cx", function(d) { return x(d.date); })
+            .attr("cy", function(d) { return y(d.count); })
+            .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(
+                '<a href= "http://google.com">' + // The first <a> tag
+                formatTime(d.date) +
+                "</a>" +                          // closing </a> tag
+                "<br/>Count: "  + d.count)     
+                .style("left", (d3.event.pageX) + "px")             
+                .style("top", (d3.event.pageY - 28) + "px");
+            });
+
+        // Add the Legend
+        svg.append("text")
+            .attr("x", (legendSpace/2)+i*legendSpace)  // space legend
+            .attr("y", height + (margin.bottom/2)+ 5)
+            .attr("class", "legend")    // style the legend
+            .style("fill", function() { // Add the colours dynamically
+                return d.color = color(d.key); })
+            .on("click", function(){
+                // Determine if current line is visible 
+                var active   = d.active ? false : true,
+                newOpacity = active ? 0 : 1; 
+                // Hide or show the elements based on the ID
+                d3.select("#tag"+d.key.replace(/\s+/g, ''))
+                    .transition().duration(100) 
+                    .style("opacity", newOpacity); 
+                // Update whether or not the elements are active
+                d.active = active;
+                })  
+            .text(d.key); 
+
+    });
+
+  // Add the X Axis
+  svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  // Add the Y Axis
+  svg.append("g")
+      .attr("class", "axis")
+      .call(d3.axisLeft(y));
+
+</script>
+</body>

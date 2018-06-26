@@ -563,6 +563,7 @@ var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
     
+    
 // Adds the svg canvas
 var svg = d3.select("body")
     .append("svg")
@@ -599,18 +600,22 @@ data.forEach(function(d) {
             .attr("class", "line")
             .style("stroke", function() { // Add the colours dynamically
                 return d.color = color(d.key); })
-            .attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign an ID
+            .attr("class", 'tag'+d.key.replace(/\s+/g, '')) // assign ID
+            //.attr("id", 'tag'+d.key.replace(/\s+/g, '')) // assign an ID
             .attr("d", countline(d.values));
 
-
-
-        // Add the dots
+    
+        // Add the dots and the tool tip
+        // The URL can be changed to link back to a different source
+        //I am leaving it in the code in case it is wanted. If not -> delete.
         svg.selectAll("dot")
            .data(data)
         .enter().append("circle")
             .attr("r", 1.5)
             .attr("cx", function(d) { return x(d.date); })
             .attr("cy", function(d) { return y(d.count); })
+            .style("fill", function(d) {return color(d.symbol)})
+            .attr("class", d=>'tag'+d.symbol.replace(/\s+/g, '')) 
             .on("mouseover", function(d) {
             div.transition()
                 .duration(200)
@@ -622,6 +627,11 @@ data.forEach(function(d) {
                 "<br/>Count: "  + d.count)     
                 .style("left", (d3.event.pageX) + "px")             
                 .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {       
+            div.transition()        
+                .duration(500)      
+                .style("opacity", 0);
             });
 
         // Add the Legend
@@ -636,9 +646,18 @@ data.forEach(function(d) {
                 var active   = d.active ? false : true,
                 newOpacity = active ? 0 : 1; 
                 // Hide or show the elements based on the ID
+                d3.selectAll(".tag"+d.key.replace(/\s+/g, ''))
+                .transition().duration(100) 
+                .style("opacity", newOpacity); 
+                /*
                 d3.select("#tag"+d.key.replace(/\s+/g, ''))
                     .transition().duration(100) 
-                    .style("opacity", newOpacity); 
+                    .style("opacity", newOpacity);
+                d3.selectAll(".dottag"+d.key.replace(/\s+/g, ''))
+                    //.transition().duration(100) 
+                    //.style("opacity", newOpacity)
+                    .attr("r", .5)
+                    .attr("fill", "red"); */
                 // Update whether or not the elements are active
                 d.active = active;
                 })  

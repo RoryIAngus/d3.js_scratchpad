@@ -2581,6 +2581,10 @@ var dataNest = d3.nest()
 // set the colour scale
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+// set the size of the dots
+var dotSize = 3;  // Normal size for the dot
+var dotSwollenSize = 8; // Size the dot grows to when hovered over by the mouse
+
 legendSpace = width / dataNest.length; // spacing for the legend
 
 // Loop through each symbol / key
@@ -2602,7 +2606,7 @@ dataNest.forEach(function(d, i) {
   svg.selectAll("dot")
     .data(data)
     .enter().append("circle")
-    .attr("r", 4)
+    .attr("r", dotSize)
     .attr("cx", function(d) {
       return x(d.date);
     })
@@ -2614,28 +2618,31 @@ dataNest.forEach(function(d, i) {
     })
     .attr("class", d => 'tag' + d.symbol.replace(/\s+/g, ''))
     .on("mouseover", function(d) {
+      d3.select(this)
+        .transition()
+        .duration(90)
+        .attr("r", dotSwollenSize);
       div.transition()
         .duration(200)
-        .style("opacity", .9);
+        .style("opacity", .95);
       div.html(
           '<a href= "http://google.com">' + // The first <a> tag
           formatTime(d.date) +
           "</a>" + // closing </a> tag
           "<br/>Count: " + d.count)
-        .style("left", (d3.event.pageX) + "px")
-        .style("top", (d3.event.pageY - 28) + "px");
+        .style("left", (d3.event.pageX + 10) + "px")
+        .style("top", (d3.event.pageY - 35) + "px");
     })
-    .on("click", function(d) {       
-  div.transition()        
-      .duration(500)      
-      .style("opacity", 0);
-  })
-  /*.on("mouseout", function(d) {       
-  div.transition()        
-      .duration(500)      
-      .style("opacity", 0);
-  })*/
-  ;
+    .on("mouseout", function(d) {
+      d3.select(this)  // Select the dot that the mouse has just pointed at
+        .transition()
+        .duration(200)
+        .attr("r", dotSize); // Make the radius of the dots return to their normal size
+      div.transition()
+        .duration(3000)
+        .style("opacity", .15);  // Leave this tooltuip visible because the object is still on the canvas even though it might be hidden (opacity = 0). which means that you can't click on the dots behind it. 
+                                 // This way at least the user knows its there and that is why they can't click on the dots.
+    });
 
   // Add the Legend
   svg.append("text")
